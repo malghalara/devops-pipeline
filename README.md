@@ -1,3 +1,4 @@
+[![CI](https://github.com/malghalara/devops-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/malghalara/devops-pipeline/actions/workflows/ci.yml)
 # DevOps Intern Final Assessment
 
 **Name:** Malghalara Ahmad
