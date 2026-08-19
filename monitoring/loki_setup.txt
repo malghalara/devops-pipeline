@@ -1,0 +1,19 @@
+LOKI SETUP NOTES
+=================
+
+How I started Loki:
+  docker run -d --name=loki -p 3100:3100 grafana/loki:latest
+
+How I forwarded container logs (Promtail):
+  docker network create loki-net
+  docker network connect loki-net loki
+  docker run -d --name=promtail --network=loki-net \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v "$(pwd)/monitoring/promtail-config.yaml":/etc/promtail/config.yaml \
+    grafana/promtail:latest -config.file=/etc/promtail/config.yaml
+
+How I viewed logs:
+  - Started Grafana: docker run -d --name=grafana --network=loki-net -p 3000:3000 grafana/grafana:latest
+  - Added Loki as a data source (URL: http://loki:3100)
+  - Viewed logs via Grafana Explore UI at http://localhost:3000
+    Query used: {container=~".+"}
