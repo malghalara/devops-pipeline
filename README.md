@@ -3,7 +3,7 @@
 
 # DevOps Pipeline — Intern Final Assessment
 
-**Name:** Your Name
+**Name:** Malghalara Ahmad
 **Date:** 2026-08-19
 
 ## Project Description
