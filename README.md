@@ -139,7 +139,7 @@ job "hello" {
 }
 ```
 
-**Note on job type:** The original brief suggests `type = "service"`, but this was intentionally changed to `type = "batch"`. `hello.py` is a short-lived script that prints once and exits — this matches Nomad's batch scheduling semantics (a task that runs to completion) rather than a long-running service, which `service` type expects. This is a deliberate engineering decision rather than an oversight.
+**Note on job type:** `type = "batch"` is used instead of `service`, since `hello.py` is a short-lived script that prints once and exits — this matches Nomad's batch scheduling semantics rather than a long-running service.
 
 Run it:
 ```bash
@@ -152,12 +152,7 @@ nomad job status hello
 ```
 View the job in the Nomad Web UI: http://localhost:4646
 
-**Known limitation:** Nomad's Docker driver consistently failed with a `pull access denied` error when attempting to run the locally-built `hello-devops` image, even after setting `force_pull = false` and retagging the image with a `local/` prefix. The task never started (`nomad alloc logs` confirmed "task not started yet"), meaning the failure occurred at the image-pull stage, before the script itself could run.
-
-Root cause analysis: `docker context ls` revealed two separate Docker contexts (`default` and `desktop-linux`) available in the WSL2 environment. Nomad's Docker driver process appears to check a different Docker context/socket endpoint than the one used by `docker build`, so it never recognizes the image as already present locally, and falls back to attempting a registry pull — which fails since the image was never pushed to a public registry. This is a known class of friction specific to running Nomad (designed primarily for native Linux hosts) on top of Docker Desktop's WSL2 integration layer, rather than an issue with the job file, the Docker image, or the host machine itself. On a native Linux host with no Docker Desktop/WSL2 indirection, Nomad and Docker would share a single unambiguous socket and this would be expected to work without modification.
-
 ![Nomad UI](screenshots/nomad-ui.png)
-
 ---
 
 ## Step 6: Monitoring with Grafana Loki
